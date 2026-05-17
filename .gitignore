@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.venv/
+.agents/
+.codex/
+.vscode/
+data/
+res/test_res/

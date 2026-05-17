@@ -1,0 +1,49 @@
+import importlib.util
+import tempfile
+import unittest
+from pathlib import Path
+
+import cv2
+import numpy as np
+from PIL import Image
+
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+TEST_MODULE_PATH = PROJECT_ROOT / "test.py"
+
+
+def load_test_module():
+    spec = importlib.util.spec_from_file_location("face_parsing_test_module", TEST_MODULE_PATH)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
+class VisParsingMapsTest(unittest.TestCase):
+    def test_saves_only_core_facial_parts(self):
+        module = load_test_module()
+        image = Image.fromarray(np.full((4, 4, 3), 128, dtype=np.uint8))
+        parsing_anno = np.array(
+            [
+                [0, 1, 2, 3],
+                [4, 5, 10, 11],
+                [12, 13, 16, 17],
+                [7, 8, 14, 15],
+            ],
+            dtype=np.uint8,
+        )
+
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            save_path = Path(temporary_directory) / "example.jpg"
+
+            module.vis_parsing_maps(image, parsing_anno, stride=1, save_im=True, save_path=str(save_path))
+
+            saved_mask = cv2.imread(str(save_path.with_suffix(".png")), cv2.IMREAD_UNCHANGED)
+
+        expected_values = {0, 2, 3, 4, 5, 10, 11, 12, 13}
+        self.assertTrue(set(np.unique(saved_mask)).issubset(expected_values))
+
+
+if __name__ == "__main__":
+    unittest.main()
