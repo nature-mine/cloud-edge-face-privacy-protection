@@ -4,6 +4,17 @@
 
 项目参考 BiSeNet 语义分割网络，并使用 CelebAMask-HQ 数据集进行训练与测试。模型可以将人脸图像中的眉毛、眼睛、鼻子、嘴唇、头发、皮肤等区域解析为不同语义类别，为后续的人脸隐私区域定位、对抗扰动生成和隐私保护效果评估提供基础。
 
+## 项目来源与二次开发说明
+
+本项目是在开源项目 [zllrunning/face-parsing.PyTorch](https://github.com/zllrunning/face-parsing.PyTorch) 的基础上开展的大学生创新创业训练计划项目。
+
+原项目主要实现了基于 BiSeNet 的人脸语义解析功能，并提供了 CelebAMask-HQ 数据预处理、模型训练、推理可视化和局部妆容示例等代码。本项目保留其人脸解析基础能力，并围绕“对抗扰动驱动的云边协同人脸隐私保护”这一大创课题进行整理和后续扩展。
+
+原项目地址：
+
+- [zllrunning/face-parsing.PyTorch](https://github.com/zllrunning/face-parsing.PyTorch)
+- [原项目 modules/src 目录](https://github.com/zllrunning/face-parsing.PyTorch/tree/master/modules/src)
+
 ## 项目功能
 
 - 人脸语义解析：对输入人脸图像进行像素级分类。
