@@ -41,7 +41,28 @@
 
 ## 环境要求
 
-项目主要依赖：
+建议使用 Python 虚拟环境安装依赖，避免把依赖包直接安装到系统环境中。
+
+创建并进入虚拟环境：
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+```
+
+安装项目依赖：
+
+```bash
+pip install -r requirements.txt
+```
+
+如果使用的是 Windows PowerShell，可以用下面的方式进入虚拟环境：
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+主要依赖包括：
 
 - Python
 - PyTorch
@@ -53,6 +74,8 @@
 - tqdm
 
 当前推理和训练代码默认使用 GPU，并在代码中调用了 `.cuda()`。如果在 CPU 环境运行，需要额外修改模型和张量的设备逻辑。
+
+`requirements.txt` 来自当前开发环境，包含 PyTorch、torchvision、OpenCV、Pillow、NumPy 以及 CUDA 相关依赖。不同显卡、CUDA 版本或操作系统下，PyTorch 相关依赖可能需要根据本机环境调整。
 
 ## 快速运行 Demo
 
