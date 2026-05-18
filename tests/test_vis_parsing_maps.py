@@ -40,9 +40,20 @@ class VisParsingMapsTest(unittest.TestCase):
             module.vis_parsing_maps(image, parsing_anno, stride=1, save_im=True, save_path=str(save_path))
 
             saved_mask = cv2.imread(str(save_path.with_suffix(".png")), cv2.IMREAD_UNCHANGED)
+            with np.load(str(save_path.with_name("example_dct_blocks.npz"))) as dct_result:
+                dct_keys = set(dct_result.files)
+                coefficients_shape = dct_result["coefficients"].shape
+                block_size = int(dct_result["block_size"])
+            blocks_image_exists = save_path.with_name("example_blocks.jpg").exists()
+            dct_image_exists = save_path.with_name("example_dct.jpg").exists()
 
         expected_values = {0, 2, 3, 4, 5, 10, 11, 12, 13}
         self.assertTrue(set(np.unique(saved_mask)).issubset(expected_values))
+        self.assertEqual(dct_keys, {"coefficients", "block_mask", "bbox", "padded_shape", "block_size"})
+        self.assertEqual(coefficients_shape[-2:], (8, 8))
+        self.assertEqual(block_size, 8)
+        self.assertTrue(blocks_image_exists)
+        self.assertTrue(dct_image_exists)
 
 
 if __name__ == "__main__":
