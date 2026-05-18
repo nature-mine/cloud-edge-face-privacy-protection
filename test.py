@@ -13,6 +13,8 @@ from PIL import Image
 import torchvision.transforms as transforms
 import cv2
 
+from dct_blocks import save_region_dct_outputs
+
 
 CORE_FACE_PART_CLASSES = {2, 3, 4, 5, 10, 11, 12, 13}
 
@@ -49,6 +51,7 @@ def vis_parsing_maps(im, parsing_anno, stride, save_im=False, save_path='vis_res
     if save_im:
         cv2.imwrite(save_path[:-4] +'.png', vis_parsing_anno)
         cv2.imwrite(save_path, vis_im, [int(cv2.IMWRITE_JPEG_QUALITY), 100])
+        save_region_dct_outputs(im, vis_parsing_anno, CORE_FACE_PART_CLASSES, save_path, block_size=8)
 
     # return vis_im
 
@@ -57,11 +60,12 @@ def evaluate(respth='./res/test_res', dspth='./data', cp='model_final_diss.pth')
     if not os.path.exists(respth):
         os.makedirs(respth)
 
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     n_classes = 19
     net = BiSeNet(n_classes=n_classes)
-    net.cuda()
+    net.to(device)
     save_pth = osp.join('res/cp', cp)
-    net.load_state_dict(torch.load(save_pth))
+    net.load_state_dict(torch.load(save_pth, map_location=device))
     net.eval()
 
     to_tensor = transforms.Compose([
@@ -74,7 +78,7 @@ def evaluate(respth='./res/test_res', dspth='./data', cp='model_final_diss.pth')
             image = img.resize((512, 512), Image.BILINEAR)
             img = to_tensor(image)
             img = torch.unsqueeze(img, 0)
-            img = img.cuda()
+            img = img.to(device)
             out = net(img)[0]
             parsing = out.squeeze(0).cpu().numpy().argmax(0)
             # print(parsing)
