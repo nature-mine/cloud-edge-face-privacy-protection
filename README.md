@@ -20,11 +20,14 @@
 - 人脸语义解析：对输入人脸图像进行像素级分类。
 - 解析结果可视化：将预测的语义分割结果叠加到原图上。
 - 核心五官区域提取：在 Demo 中保留眉毛、眼睛、鼻子、嘴唇等核心区域。
+- 关键区域 DCT 分块输出：根据核心五官 mask 提取最小包围框，按 `8 x 8` 分块计算 DCT 系数，并保存系数文件和可视化结果。
 - 局部妆容演示：基于解析结果对头发、嘴唇等区域进行换色。
 
 ## 项目进度清单
 
 - [x] 完成人脸语义解析基础代码整理。
+
+- [x] 完成核心五官区域 DCT 分块输出与可视化结果保存。
 
 - [ ] 待补充
 
@@ -37,6 +40,7 @@
 ├── train.py               # 模型训练入口
 ├── test.py                # Demo 推理入口
 ├── evaluate.py            # 训练过程中的推理可视化脚本
+├── dct_blocks.py          # 核心五官区域 DCT 分块提取与保存
 ├── prepropess_data.py     # CelebAMask-HQ 标签预处理脚本
 ├── face_dataset.py        # 数据集读取与增强
 ├── transform.py           # 数据增强方法
@@ -84,7 +88,7 @@ pip install -r requirements.txt
 - scikit-image
 - tqdm
 
-当前推理和训练代码默认使用 GPU，并在代码中调用了 `.cuda()`。如果在 CPU 环境运行，需要额外修改模型和张量的设备逻辑。
+`test.py` 和 `evaluate.py` 会自动选择 CUDA 或 CPU 设备。训练代码仍按 GPU 环境编写，单 GPU 或 CPU 环境需要额外调整训练启动方式和设备逻辑。
 
 `requirements.txt` 来自当前开发环境，包含 PyTorch、torchvision、OpenCV、Pillow、NumPy 以及 CUDA 相关依赖。不同显卡、CUDA 版本或操作系统下，PyTorch 相关依赖可能需要根据本机环境调整。
 
@@ -117,6 +121,9 @@ res/test_res/
 
 - `.jpg` 文件为分割结果叠加到原图后的可视化结果。
 - `.png` 文件为经过核心五官类别过滤后的语义 mask。
+- `*_dct_blocks.npz` 文件保存核心五官区域的 DCT 系数、分块 mask、最小包围框、补齐后尺寸和分块大小。
+- `*_blocks.jpg` 文件为核心五官区域最小包围框和 `8 x 8` 分块网格可视化。
+- `*_dct.jpg` 文件为 DCT 系数幅值的归一化可视化结果。
 
 ## 数据预处理
 
@@ -210,7 +217,7 @@ res/model_final_diss.pth
 3. 将图片缩放到 `512 x 512`。
 4. 使用 BiSeNet 输出语义分割结果。
 5. 只保留核心五官相关类别。
-6. 将结果保存到 `res/test_res/`。
+6. 将过滤后的 mask、叠加可视化结果、DCT 系数和 DCT 可视化结果保存到 `res/test_res/`。
 
 核心五官类别在 `test.py` 中定义：
 
@@ -219,6 +226,16 @@ CORE_FACE_PART_CLASSES = {2, 3, 4, 5, 10, 11, 12, 13}
 ```
 
 如果需要保留头发、皮肤、脖子、衣服等完整类别，可以根据需求修改该集合，或者使用 `evaluate.py` 中不过滤类别的可视化逻辑。
+
+Demo 保存 DCT 输出时，会先根据核心五官 mask 计算最小包围框，再对包围框区域补齐到 `8 x 8` 的整数倍。`*_dct_blocks.npz` 中包含以下字段：
+
+```text
+coefficients   DCT 系数，形状为 (block_rows, block_cols, 8, 8)
+block_mask     标记每个分块是否包含核心五官像素
+bbox           核心五官区域最小包围框，格式为 [x0, y0, x1, y1]
+padded_shape   补齐后的区域尺寸
+block_size     分块大小，当前为 8
+```
 
 ## 妆容效果演示
 
