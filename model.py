@@ -90,9 +90,9 @@ class AttentionRefinementModule(nn.Module):
 
 
 class ContextPath(nn.Module):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, pretrained=True, **kwargs):
         super(ContextPath, self).__init__()
-        self.resnet = Resnet18()
+        self.resnet = Resnet18(pretrained=pretrained)
         self.arm16 = AttentionRefinementModule(256, 128)
         self.arm32 = AttentionRefinementModule(512, 128)
         self.conv_head32 = ConvBNReLU(128, 128, ks=3, stride=1, padding=1)
@@ -228,9 +228,9 @@ class FeatureFusionModule(nn.Module):
 
 
 class BiSeNet(nn.Module):
-    def __init__(self, n_classes, *args, **kwargs):
+    def __init__(self, n_classes, *args, pretrained=True, **kwargs):
         super(BiSeNet, self).__init__()
-        self.cp = ContextPath()
+        self.cp = ContextPath(pretrained=pretrained)
         ## here self.sp is deleted
         self.ffm = FeatureFusionModule(256, 256)
         self.conv_out = BiSeNetOutput(256, 256, n_classes)

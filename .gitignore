@@ -6,3 +6,6 @@ __pycache__/
 .vscode/
 data/
 res/test_res/
+res/privacy/
+weights/
+.pytest_cache/

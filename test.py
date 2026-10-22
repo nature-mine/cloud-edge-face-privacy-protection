@@ -62,7 +62,7 @@ def evaluate(respth='./res/test_res', dspth='./data', cp='model_final_diss.pth')
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     n_classes = 19
-    net = BiSeNet(n_classes=n_classes)
+    net = BiSeNet(n_classes=n_classes, pretrained=False)
     net.to(device)
     save_pth = osp.join('res/cp', cp)
     net.load_state_dict(torch.load(save_pth, map_location=device))

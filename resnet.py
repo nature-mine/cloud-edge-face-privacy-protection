@@ -56,7 +56,7 @@ def create_layer_basic(in_chan, out_chan, bnum, stride=1):
 
 
 class Resnet18(nn.Module):
-    def __init__(self):
+    def __init__(self, pretrained=True):
         super(Resnet18, self).__init__()
         self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3,
                                bias=False)
@@ -66,7 +66,8 @@ class Resnet18(nn.Module):
         self.layer2 = create_layer_basic(64, 128, bnum=2, stride=2)
         self.layer3 = create_layer_basic(128, 256, bnum=2, stride=2)
         self.layer4 = create_layer_basic(256, 512, bnum=2, stride=2)
-        self.init_weight()
+        if pretrained:
+            self.init_weight()
 
     def forward(self, x):
         x = self.conv1(x)

@@ -21,6 +21,7 @@
 - 解析结果可视化：将预测的语义分割结果叠加到原图上。
 - 核心五官区域提取：在 Demo 中保留眉毛、眼睛、鼻子、嘴唇等核心区域。
 - 关键区域 DCT 分块输出：根据核心五官 mask 提取最小包围框，按 `8 x 8` 分块计算 DCT 系数，并保存系数文件和可视化结果。
+- 频域对抗扰动实验：使用冻结的预训练 ArcFace 优化可微 RGB DCT 扰动，支持仅高频和中高频两种模式，输出 IDCT 重建、逆对齐后的 PNG 和实测指标。
 - 局部妆容演示：基于解析结果对头发、嘴唇等区域进行换色。
 
 ## 项目进度清单
@@ -29,7 +30,11 @@
 
 - [x] 完成核心五官区域 DCT 分块输出与可视化结果保存。
 
-- [ ] 待补充
+- [x] 接通频带约束、ArcFace 输入梯度、PGD、IDCT 重建和原图回贴。
+
+- [x] 完成示例图两种频带模式的 20 轮运行与回归测试。
+
+- [ ] 在验证集上标定识别阈值，评估攻击成功率与 AdaFace 黑盒迁移。当前示例的相似度降幅较小，不能视为已实现识别失败。
 
 
 ## 目录结构
@@ -124,6 +129,37 @@ res/test_res/
 - `*_dct_blocks.npz` 文件保存核心五官区域的 DCT 系数、分块 mask、最小包围框、补齐后尺寸和分块大小。
 - `*_blocks.jpg` 文件为核心五官区域最小包围框和 `8 x 8` 分块网格可视化。
 - `*_dct.jpg` 文件为 DCT 系数幅值的归一化可视化结果。
+
+## 频域隐私保护实验（第五步起）
+
+新增入口为 `privacy_demo.py`，原来的 `test.py` 和灰度 DCT 文件格式继续保留。详细算法、参数含义、模型来源和结果见 [频域实验说明](docs/PRIVACY_PIPELINE.md)。
+
+建议使用 Python 3.11 或更新版本，在独立虚拟环境安装跨平台依赖：
+
+```bash
+python -m pip install -r requirements-privacy.txt
+python download_privacy_models.py
+python privacy_demo.py --bands high --output res/privacy/high
+python privacy_demo.py --bands mid-high --output res/privacy/mid_high
+python -m pytest tests -q
+```
+
+Windows 虚拟环境路径过长时，ONNX 的安装可能触发路径长度限制，建议使用较短的虚拟环境路径。CPU 可以运行；CUDA 需要先安装与显卡匹配的 PyTorch/torchvision。
+
+模型下载脚本从 InsightFace 官方 release 获取 ArcFace `w600k_r50.onnx`，从 OpenCV 官方模型仓库获取 YuNet，并校验 SHA256。预训练模型单独下载到被 Git 忽略的 `weights/`；InsightFace 预训练权重限非商业研究使用。
+
+默认参数：20 轮、像素预算 `8/255`、频域步长 `1/255`，DC 和低频不参与频域优化。默认只优化高频；`--bands mid-high` 同时开放中频。
+
+2026-10-22 在仓库 `data/example.jpg` 上的实测结果：
+
+| 模式 | 对齐人脸浮点相似度 | 保存 PNG 后重新对齐的相似度 | 最大像素改变量 |
+|---|---:|---:|---:|
+| 仅高频 | 0.995182 | 0.995824 | 8/255 |
+| 中高频 | 0.986322 | 0.987487 | 8/255 |
+
+原图与自身的相似度约为 1。以上结果证明流程和约束已接通，但没有证明识别失败。当前没有验证集阈值、攻击成功率或黑盒迁移结果。完整指标、逐轮损失和保存后对比图位于 [运行记录](docs/privacy_runs/)。
+
+每次运行生成完整保护图、对齐前后的人脸、语义掩码、`*_frequency.npz` 频域扰动及 `metrics.json`。最终 PNG 回贴时仅逆变换扰动，避免无扰动背景因重采样而改变；保存后再次计算相似度和像素改变量。
 
 ## 数据预处理
 

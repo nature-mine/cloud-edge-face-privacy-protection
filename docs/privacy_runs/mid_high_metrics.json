@@ -1,0 +1,209 @@
+{
+  "input": "example.jpg",
+  "input_sha256": "cf731140563a611354f5ec49938c3be01028ed5963dbec01b91c51bec4bab646",
+  "device": "cpu",
+  "torch_version": "2.11.0+cpu",
+  "config": {
+    "steps": 20,
+    "step_size": 0.00392156862745098,
+    "epsilon": 0.03137254901960784,
+    "mid_budget": 0.08,
+    "high_budget": 0.04,
+    "bands": "mid-high",
+    "seed": 0,
+    "init_scale": 0.001
+  },
+  "detector": "OpenCV YuNet 2023mar",
+  "recognizer": "InsightFace buffalo_l w600k_r50 (ArcFace)",
+  "arcface_sha256": "4c06341c33c2ca1f86781dab0e829f88ad5b64be9fba56e56bc9ebdefc619e43",
+  "detector_sha256": "8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4",
+  "parsing_sha256": "468e13ca13a9b43cc0881a9f99083a430e9c0a38abd935431d1c28ee94b26567",
+  "faces": [
+    {
+      "index": 0,
+      "detection_confidence": 0.9382103085517883,
+      "landmarks": [
+        [
+          1048.294921875,
+          1381.6312255859375
+        ],
+        [
+          1487.565673828125,
+          1381.154052734375
+        ],
+        [
+          1280.6431884765625,
+          1656.60693359375
+        ],
+        [
+          1073.1737060546875,
+          1869.6729736328125
+        ],
+        [
+          1440.079345703125,
+          1874.7415771484375
+        ]
+      ],
+      "transform": [
+        [
+          0.08145205676555634,
+          0.0017544496804475784,
+          -49.95277786254883
+        ],
+        [
+          -0.0017544496804475784,
+          0.08145205676555634,
+          -58.869937896728516
+        ]
+      ],
+      "mask_pixels": 1031,
+      "cosine_before": 1.0000001192092896,
+      "cosine_aligned_float": 0.9863223433494568,
+      "aligned_pixel_linf": 0.0313725471496582,
+      "history": [
+        {
+          "step": 0,
+          "cosine": 1.0000001192092896,
+          "pixel_linf": 0.0
+        },
+        {
+          "step": 0,
+          "phase": "initialization",
+          "cosine": 0.999998927116394,
+          "pixel_linf": 0.0020976290106773376
+        },
+        {
+          "step": 1,
+          "phase": "update",
+          "cosine": 0.9976173639297485,
+          "pixel_linf": 0.020319610834121704
+        },
+        {
+          "step": 2,
+          "phase": "update",
+          "cosine": 0.9936087727546692,
+          "pixel_linf": 0.0313725471496582
+        },
+        {
+          "step": 3,
+          "phase": "update",
+          "cosine": 0.9916697144508362,
+          "pixel_linf": 0.0313725471496582
+        },
+        {
+          "step": 4,
+          "phase": "update",
+          "cosine": 0.9904800057411194,
+          "pixel_linf": 0.0313725471496582
+        },
+        {
+          "step": 5,
+          "phase": "update",
+          "cosine": 0.9899330139160156,
+          "pixel_linf": 0.0313725471496582
+        },
+        {
+          "step": 6,
+          "phase": "update",
+          "cosine": 0.989475429058075,
+          "pixel_linf": 0.0313725471496582
+        },
+        {
+          "step": 7,
+          "phase": "update",
+          "cosine": 0.989057183265686,
+          "pixel_linf": 0.0313725471496582
+        },
+        {
+          "step": 8,
+          "phase": "update",
+          "cosine": 0.9887455701828003,
+          "pixel_linf": 0.0313725471496582
+        },
+        {
+          "step": 9,
+          "phase": "update",
+          "cosine": 0.9884946942329407,
+          "pixel_linf": 0.0313725471496582
+        },
+        {
+          "step": 10,
+          "phase": "update",
+          "cosine": 0.98825603723526,
+          "pixel_linf": 0.0313725471496582
+        },
+        {
+          "step": 11,
+          "phase": "update",
+          "cosine": 0.987457811832428,
+          "pixel_linf": 0.0313725471496582
+        },
+        {
+          "step": 12,
+          "phase": "update",
+          "cosine": 0.9875619411468506,
+          "pixel_linf": 0.0313725471496582
+        },
+        {
+          "step": 13,
+          "phase": "update",
+          "cosine": 0.9880486130714417,
+          "pixel_linf": 0.0313725471496582
+        },
+        {
+          "step": 14,
+          "phase": "update",
+          "cosine": 0.9873283505439758,
+          "pixel_linf": 0.0313725471496582
+        },
+        {
+          "step": 15,
+          "phase": "update",
+          "cosine": 0.9876983761787415,
+          "pixel_linf": 0.0313725471496582
+        },
+        {
+          "step": 16,
+          "phase": "update",
+          "cosine": 0.9868003129959106,
+          "pixel_linf": 0.0313725471496582
+        },
+        {
+          "step": 17,
+          "phase": "update",
+          "cosine": 0.9873284101486206,
+          "pixel_linf": 0.0313725471496582
+        },
+        {
+          "step": 18,
+          "phase": "update",
+          "cosine": 0.9866016507148743,
+          "pixel_linf": 0.0313725471496582
+        },
+        {
+          "step": 19,
+          "phase": "update",
+          "cosine": 0.9863223433494568,
+          "pixel_linf": 0.0313725471496582
+        },
+        {
+          "step": 20,
+          "phase": "update",
+          "cosine": 0.986833930015564,
+          "pixel_linf": 0.0313725620508194
+        }
+      ],
+      "cosine_saved_image": 0.9874874949455261
+    }
+  ],
+  "onnx_conversion_max_error": 1.7136335372924805e-07,
+  "saved_pixel_linf_255": 8,
+  "full_image_psnr_db": 63.100190959817965,
+  "seconds": 9.290144099970348,
+  "output": "example_protected.png",
+  "limitations": [
+    "Single-model similarity is not a calibrated recognition success/failure rate.",
+    "Masking, clipping, quantization and resampling can introduce low frequencies in the final image.",
+    "AdaFace transfer and dataset-level verification are not evaluated."
+  ]
+}
